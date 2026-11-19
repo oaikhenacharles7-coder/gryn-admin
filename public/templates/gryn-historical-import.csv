@@ -1,0 +1,2 @@
+external_id,name,email,phone,country,school,course,intake,intake_year,status,staff_email,created_at,submitted_at,offer_received_at,notes
+CASE-2024-001,Example Student,example@example.com,,United Kingdom,Replace with school name,MSc Management,September,2024,Enrolled,staff2@test.com,2024-01-15,2024-02-01,2024-03-01,Replace this example row before importing
