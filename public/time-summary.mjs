@@ -1,0 +1,7 @@
+const DAY=86400000,OFFSET=3600000;
+export const lagosDay=(now=Date.now())=>new Date(now+OFFSET).toISOString().slice(0,10);
+export const dayStart=date=>Date.parse(date+'T00:00:00Z')-OFFSET;
+export function periodRange(date,period){const start=dayStart(date);if(period==='day')return [start,start+DAY];const d=new Date(start+OFFSET);if(period==='week'){const monday=start-((d.getUTCDay()+6)%7)*DAY;return [monday,monday+7*DAY];}if(period==='month')return [Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),1)-OFFSET,Date.UTC(d.getUTCFullYear(),d.getUTCMonth()+1,1)-OFFSET];return [Date.UTC(d.getUTCFullYear(),0,1)-OFFSET,Date.UTC(d.getUTCFullYear()+1,0,1)-OFFSET];}
+export function workTotal(state,actor,period='day',date=lagosDay(),now=Date.now()){const [from,to]=periodRange(date,period);let total=0;for(const [key,w] of Object.entries(state.work||{})){if(!key.endsWith('-'+actor))continue;const day=dayStart(key.slice(0,10));if(day>=from&&day<to)total+=Math.max(0,Number(w.elapsed)||0);if(w.runningSince)total+=Math.max(0,Math.min(now,state.timerEnds?.[actor]||now,to)-Math.max(w.runningSince,from));}return total;}
+export function sessionTime(state,actor,now=Date.now()){const start=state.loginStarts?.[actor];return start?Math.max(0,Math.min(now,state.timerEnds?.[actor]||now)-Math.max(start,dayStart(lagosDay(now)))):0;}
+export function duration(ms){const s=Math.floor(Math.max(0,ms)/1000);return [Math.floor(s/3600),Math.floor(s/60)%60,s%60].map(n=>String(n).padStart(2,'0')).join(':');}

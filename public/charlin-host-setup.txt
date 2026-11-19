@@ -1,0 +1,30 @@
+CHARLIN HOST CONNECTION — GRYN INDEX
+
+Current browser-memory sandbox:
+Open /charlin-lab.html on either portal. Load the fictional sample, test statement topic checks, rehearse a timed interview, switch role workflows and export browser records. Data stays under the localStorage key gryn-charlin-lab-v1; clearing the lab does not delete CRM records. Different browsers/devices have separate records. This is a rule-based rehearsal, NOT a running language model or factual university verification.
+
+Live open-source AI:
+1. On a server you control, install Ollama using its official instructions: https://docs.ollama.com/quickstart
+2. Download a model suitable for your server, for example: ollama pull qwen3:8b
+   Qwen3 open weights are Apache 2.0 licensed. Model software is free; server/GPU, electricity and hosting may cost money. Review model requirements before choosing hardware.
+3. Put the model API behind an authenticated HTTPS reverse proxy or supported private tunnel. Do not expose an unauthenticated Ollama listener to the internet.
+4. In BOTH Sites projects’ runtime environments configure:
+   CHARLIN_BASE_URL=https://your-protected-ai-domain.example/v1
+   CHARLIN_MODEL=qwen3:8b
+   CHARLIN_API_KEY=your-proxy-access-secret  (mark as secret)
+   Keep the existing CRM_SERVICE_TOKEN on the external portal.
+5. Deploy the saved versions again to apply the environment changes.
+6. Test a fictional application first: choose a configured university and correct official course URL, consent to sending the statement to your host, and run validation. Review all five criteria, sources, follow-ups and review history.
+7. Finish an interview with enough saved transcripts, consent to AI assessment and test that the model compares the actual statement and current university source. Check that source failures or invalid responses save no score.
+
+The model API must support POST /v1/chat/completions with messages, JSON response_format and a choices[0].message.content JSON response. Calls time out after 55 seconds; adjust your server/model size for this budget. The hosted CRM uses HTTPS, not a localhost model endpoint. The source check is performed by the CRM before the model is called. Schools without a configured official domain require a domain-directory update.
+
+Charlin does not autonomously fine-tune on student records. It stores private statement review history per application and anonymous topic counters for interview preparation. It retains manual risk ratings and workflow permissions. AI scores are training feedback, not visa decisions. Source retrieval does not prove every claim is correct. Raw interview audio is not sent by the transcript assessment feature; missing transcripts may prevent assessment.
+
+Optional existing OpenAI path:
+The external interview module retains its earlier OPENAI_API_KEY fallback. To use only the open-source host, configure CHARLIN_BASE_URL and CHARLIN_MODEL; this path is preferred when present. Do not put model keys into browser scripts or source control.
+
+Files for a host-based implementation:
+Admin/staff: lib/charlin/engine.mjs and service.mjs; /api/gryn/charlin; public/charlin.*.
+Agent/student: portal/ai-assessment.mjs and interview-rules.mjs; /api/portal; public/practice-embed.html.
+Database changes: apply all bundled Drizzle migrations in order using the supported deployment workflow. Preserve D1/R2 bindings and existing authentication.
