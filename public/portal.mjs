@@ -141,3 +141,5 @@ function syncTopUpRoute(root){const program=root?.querySelector('[name="program"
 
 document.addEventListener('submit',async e=>{const f=e.target;if(f.id!=='resetAccountPassword')return;e.preventDefault();const b=e.submitter;b.disabled=true;try{const payload=Object.fromEntries(new FormData(f));if(payload.password!==payload.confirmPassword)throw Error('The new passwords do not match.');const r=await fetch('/api/gryn/password-reset',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}),d=await r.json();if(!r.ok)throw Error(d.error);f.reset();$('#dialog').close();if(d.signedOut){alert('Password changed. Sign in again using the new password.');location.reload();return;}toast('Password reset. The account must sign in with the new password.');}catch(err){$('#resetPasswordError').textContent=err.message;}finally{b.disabled=false;}});
 
+
+document.addEventListener('gii-open-thread',e=>{if(state.conversations?.some(c=>c.id===e.detail?.id))addon.openThread(e.detail.id);});
