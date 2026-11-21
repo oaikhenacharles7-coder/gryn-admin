@@ -1,0 +1,4 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {mountWorkspaceTools} from '../public/workspace-tools.mjs';
+test('support tools add controls without replacing original forms and do not enter finance pages',()=>{const original=globalThis.document,controls=[];globalThis.document={createElement:()=>({dataset:{},append(x){this.child=x;},addEventListener(){},set type(x){},set textContent(x){}})};try{const root={querySelector:()=>controls.length?controls[0]:null,prepend:x=>controls.push(x),set innerHTML(_){throw Error('Original application form was replaced');}};mountWorkspaceTools({root,apiRoot:'/api/gryn',cases:[],context:'payments'});assert.equal(controls.length,0);mountWorkspaceTools({root,apiRoot:'/api/gryn',cases:[],context:'applications'});assert.equal(controls.length,1);mountWorkspaceTools({root,apiRoot:'/api/gryn',cases:[],context:'applications'});assert.equal(controls.length,1);}finally{globalThis.document=original;}});
