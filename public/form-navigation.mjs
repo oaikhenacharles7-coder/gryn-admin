@@ -8,7 +8,7 @@ export function installFormNavigation(ctx){
  // Do not include transient visual flags in a form's identity.
  const identity=f=>{const d={...f.dataset};delete d.unsaved;return ctx.actor()+'|'+ctx.route()+'|'+JSON.stringify(d);};
 
- function capture(f){if(!f||restoring)return;const k=identity(f);const els=controls(f),keys=controlKeys(els);drafts.set(k,els.map((el,index)=>({key:keys[index],name:el.name,type:el.type,value:el.value,checked:el.checked,files:el.type==='file'?el.files:null})));f.dataset.unsaved='true';}
+ function capture(f){if(!f||restoring||f.dataset.sensitive==='true')return;const k=identity(f);const els=controls(f),keys=controlKeys(els);drafts.set(k,els.map((el,index)=>({key:keys[index],name:el.name,type:el.type,value:el.value,checked:el.checked,files:el.type==='file'?el.files:null})));f.dataset.unsaved='true';}
  function restore(f){const values=drafts.get(identity(f));if(!values)return false;restoreDraftControls(controls(f),values);f.dataset.unsaved='true';return true;}
  function frame(){return {title:title.textContent,nodes:[...body.childNodes],scroll:modal.scrollTop};}
  function show(f){restoring=true;title.textContent=f.title;body.replaceChildren(...f.nodes);if(!modal.open)modal.showModal();modal.scrollTop=f.scroll;restoring=false;decorate();}
@@ -30,3 +30,4 @@ export function installFormNavigation(ctx){
  new MutationObserver(()=>decorate()).observe(document.querySelector('#content'),{childList:true});
  return {beforeOpen,decorate,previous,routeChange,discardClose,saved,hasDrafts:()=>drafts.size>0,reset:()=>{drafts.clear();stack=[];parked=null;notice();}};
 }
+
